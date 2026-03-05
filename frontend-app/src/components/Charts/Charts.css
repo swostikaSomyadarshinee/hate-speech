@@ -1,0 +1,37 @@
+.chart-container{
+
+width:100%;
+
+height:240px;
+
+position:relative;
+
+}
+
+/* canvas responsive */
+
+canvas{
+
+max-width:100% !important;
+
+}
+
+/* smoother rendering */
+
+.chart-container canvas{
+
+transition:all 0.4s ease;
+
+}
+
+/* mobile support */
+
+@media(max-width:768px){
+
+.chart-container{
+
+height:220px;
+
+}
+
+}

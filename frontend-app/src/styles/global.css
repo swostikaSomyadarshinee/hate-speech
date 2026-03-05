@@ -1,0 +1,101 @@
+@import url('./variables.css');
+
+/* ===== GOOGLE FONTS ===== */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+/* ===== RESET ===== */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+
+  font-family: var(--font-body);
+  color: var(--text-main);
+  background: radial-gradient(
+    circle at top,
+    #1a0000 0%,
+    #0a0a0f 40%,
+    #000000 100%
+  );
+
+  min-height:100vh;
+}
+
+/* ===== LINKS ===== */
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+/* ===== SCROLLBAR ===== */
+
+::-webkit-scrollbar{
+  width:8px;
+}
+
+::-webkit-scrollbar-track{
+  background:#0a0a0f;
+}
+
+::-webkit-scrollbar-thumb{
+  background: var(--primary-red);
+  border-radius:10px;
+}
+
+/* ===== COMMON CONTAINER ===== */
+
+.container{
+  width:90%;
+  max-width:1200px;
+  margin:auto;
+}
+
+/* ===== GLASS CARD ===== */
+
+.glass-card{
+
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(12px);
+
+  border:1px solid var(--border-red);
+
+  border-radius:12px;
+
+  padding:20px;
+}
+
+/* ===== BUTTON STYLE ===== */
+
+.btn-primary{
+
+  padding:10px 20px;
+
+  background: var(--primary-red);
+
+  border:none;
+
+  color:white;
+
+  font-weight:500;
+
+  border-radius:6px;
+
+  cursor:pointer;
+
+  transition: var(--transition-normal);
+
+}
+
+.btn-primary:hover{
+
+  box-shadow: var(--neon-glow);
+
+  transform: translateY(-2px);
+
+}

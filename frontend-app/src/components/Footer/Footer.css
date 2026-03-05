@@ -1,0 +1,30 @@
+.footer{
+  margin-top:80px;
+  border-top:1px solid rgba(255,42,42,0.15);
+  padding:20px 0;
+  background:#0A0A0F;
+}
+
+.footer-content{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:14px;
+  color: var(--text-muted);
+}
+
+.footer-author{
+  color: var(--primary-red);
+}
+
+/* ===== MOBILE FOOTER ===== */
+
+@media (max-width:600px){
+
+  .footer-content{
+    flex-direction:column;
+    gap:8px;
+    text-align:center;
+  }
+
+}

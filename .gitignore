@@ -1,0 +1,25 @@
+# python
+venv/
+backend/venv/
+__pycache__/
+*.pyc
+
+# node
+node_modules/
+frontend-app/node_modules/
+
+# environment
+.env
+
+# ML models
+backend/models/
+*.h5
+*.pt
+*.pth
+*.pkl
+*.safetensors
+
+# datasets
+*.csv
+*.zip
+*.tar

@@ -1,0 +1,33 @@
+import os
+
+
+class Config:
+    """
+    Global configuration settings for the Hate Speech AI backend
+    """
+
+    # Base directory
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+    # Model directories
+    MODELS_DIR = os.path.join(BASE_DIR, "models")
+    ML_MODELS_DIR = os.path.join(MODELS_DIR, "ml_models")
+    DL_MODELS_DIR = os.path.join(MODELS_DIR, "dl_models")
+    BERT_MODEL_DIR = os.path.join(MODELS_DIR, "bert_model")
+
+    # Artifacts
+    ARTIFACTS_DIR = os.path.join(BASE_DIR, "artifacts")
+
+    # Tokenizer
+    TOKENIZER_DIR = os.path.join(BASE_DIR, "tokenizer")
+
+    # Results
+    RESULTS_DIR = os.path.join(BASE_DIR, "results")
+
+    # API settings
+    API_PREFIX = "/api"
+
+    # Flask settings
+    DEBUG = True
+    HOST = "0.0.0.0"
+    PORT = 5000

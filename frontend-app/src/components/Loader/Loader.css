@@ -1,0 +1,33 @@
+.loader-container{
+
+text-align:center;
+
+margin-top:20px;
+
+}
+
+.scanner{
+
+width:60px;
+
+height:60px;
+
+border-radius:50%;
+
+border:4px solid rgba(255,42,42,0.2);
+
+border-top:4px solid #ff2a2a;
+
+animation:spin 1s linear infinite;
+
+margin:auto;
+
+}
+
+@keyframes spin{
+
+0%{transform:rotate(0)}
+
+100%{transform:rotate(360deg)}
+
+}

@@ -1,0 +1,92 @@
+.comparison{
+margin-top:50px;
+padding-bottom:40px;
+}
+
+/* Title */
+
+.comparison-title{
+  font-family: var(--font-heading);
+margin-bottom:25px;
+font-weight:600;
+letter-spacing:0.5px;
+color: var(--primary-red);
+}
+
+
+/* Charts Section */
+
+.chart-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:30px;
+margin-top:25px;
+}
+
+.chart-card{
+padding:20px;
+text-align:center;
+}
+
+
+/* Confusion Matrices Section */
+
+.matrices-section{
+margin-top:40px;
+}
+
+.matrix-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:30px;
+margin-top:25px;
+}
+
+.matrix-card{
+background:#0f0f14;
+padding:20px;
+border-radius:10px;
+text-align:center;
+box-shadow:0 0 8px rgba(0,0,0,0.4);
+transition:transform 0.2s ease;
+}
+
+.matrix-card:hover{
+transform:translateY(-3px);
+}
+
+.matrix-image{
+width:100%;
+max-height:420px;
+object-fit:contain;
+border-radius:6px;
+}
+
+.matrix-label{
+margin-top:10px;
+font-size:14px;
+color:#aaa;
+letter-spacing:1px;
+}
+
+
+/* Table Section */
+
+.table-section{
+margin-top:40px;
+}
+
+
+/* Responsive */
+
+@media(max-width:768px){
+
+.chart-grid{
+grid-template-columns:1fr;
+}
+
+.matrix-grid{
+grid-template-columns:1fr;
+}
+
+}

@@ -1,0 +1,35 @@
+:root {
+
+  /* ===== COLORS ===== */
+
+  --bg-main: #0A0A0F;
+  --bg-panel: #111117;
+
+  --primary-red: #FF2A2A;
+  --glow-red: #FF4D4D;
+
+  --accent-blue: #00E5FF;
+
+  --text-main: #EAEAEA;
+  --text-muted: #A0A0A0;
+
+  --border-red: rgba(255, 42, 42, 0.25);
+
+  /* ===== FONTS ===== */
+
+  --font-heading: 'Orbitron', sans-serif;
+  --font-body: 'Poppins', sans-serif;
+
+  /* ===== SHADOW ===== */
+
+  --neon-glow: 
+  0 0 5px #ff2a2a,
+  0 0 15px #ff2a2a,
+  0 0 30px rgba(255, 42, 42, 0.5);
+
+  /* ===== TRANSITIONS ===== */
+
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.35s ease;
+
+}
