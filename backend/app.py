@@ -86,14 +86,16 @@ if __name__ == "__main__":
     print(" Starting Hate Speech Backend ")
     print("==============================\n")
 
-    print(f"Host: {Config.HOST}")
-    print(f"Port: {Config.PORT}")
+    port = int(os.environ.get("PORT", Config.PORT))
+
+    print(f"Host: 0.0.0.0")
+    print(f"Port: {port}")
     print(f"API Prefix: {Config.API_PREFIX}")
-    print("Frontend URL: http://localhost:5173")
+
     print("\nServer running...\n")
 
     app.run(
-        host=Config.HOST,
-        port=Config.PORT,
+        host="0.0.0.0",
+        port=port,
         debug=Config.DEBUG
     )
