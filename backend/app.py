@@ -76,7 +76,6 @@ load_all()
 
 print("\nModels loaded successfully!\n")
 
-
 # ==========================================
 # Run Server
 # ==========================================
@@ -86,7 +85,8 @@ if __name__ == "__main__":
     print(" Starting Hate Speech Backend ")
     print("==============================\n")
 
-    port = int(os.environ.get("PORT", Config.PORT))
+    # Render requires binding to 0.0.0.0 and PORT env variable
+    port = int(os.environ.get("PORT", 10000))
 
     print(f"Host: 0.0.0.0")
     print(f"Port: {port}")
@@ -97,5 +97,5 @@ if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
         port=port,
-        debug=Config.DEBUG
+        debug=False
     )
