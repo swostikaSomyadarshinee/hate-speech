@@ -1,4 +1,6 @@
 import os
+import threading
+import logging
 
 from flask import Flask, send_from_directory, jsonify
 from flask_cors import CORS
@@ -15,17 +17,57 @@ from utils.model_loader import load_all
 
 
 # ==========================================
+# Logging Setup
+# ==========================================
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s"
+)
+
+logger = logging.getLogger(__name__)
+
+
+# ==========================================
+# Global Model Status
+# ==========================================
+MODELS_READY = False
+
+
+# ==========================================
+# Model Loader Thread
+# ==========================================
+def load_models_background():
+    """
+    Load AI models without blocking server startup.
+    This prevents Render port timeout.
+    """
+    global MODELS_READY
+
+    try:
+        logger.info("Loading AI models...")
+
+        load_all()
+
+        MODELS_READY = True
+
+        logger.info("All models loaded successfully!")
+
+    except Exception as e:
+        logger.error(f"Model loading failed: {str(e)}")
+
+
+# ==========================================
 # Create Flask Application
 # ==========================================
 def create_app():
 
     app = Flask(__name__)
-
-    # Load configuration
     app.config.from_object(Config)
 
-    # Enable CORS (for React frontend)
+    # Enable CORS
     CORS(app)
+
+    logger.info("Flask application initialized")
 
     # ==========================================
     # Register API Routes
@@ -34,15 +76,14 @@ def create_app():
     app.register_blueprint(model_bp, url_prefix=Config.API_PREFIX)
     app.register_blueprint(analytics_bp, url_prefix=Config.API_PREFIX)
 
+    logger.info("Routes registered successfully")
+
     # ==========================================
-    # Serve Results Folder (Images for frontend)
+    # Serve Results (Confusion matrices, charts)
     # ==========================================
     @app.route("/results/<path:filename>")
     def serve_results(filename):
-        """
-        Serve confusion matrices and performance plots
-        """
-        results_dir = os.path.join(Config.BASE_DIR, "results")
+        results_dir = Config.RESULTS_DIR
         return send_from_directory(results_dir, filename)
 
     # ==========================================
@@ -53,8 +94,19 @@ def create_app():
         return jsonify({
             "status": "running",
             "service": "Hate Speech Detection API",
-            "version": "1.0"
+            "version": "1.0",
+            "models_loaded": MODELS_READY
         })
+
+    # ==========================================
+    # Readiness Check
+    # ==========================================
+    @app.route("/ready")
+    def readiness():
+        if MODELS_READY:
+            return jsonify({"status": "ready"})
+        else:
+            return jsonify({"status": "loading models"}), 503
 
     return app
 
@@ -66,33 +118,19 @@ app = create_app()
 
 
 # ==========================================
-# Load AI Models at Startup
-# ==========================================
-print("\n==============================")
-print(" Loading Hate Speech AI Models ")
-print("==============================\n")
-
-load_all()
-
-print("\nModels loaded successfully!\n")
-
-# ==========================================
 # Run Server
 # ==========================================
 if __name__ == "__main__":
 
-    print("==============================")
-    print(" Starting Hate Speech Backend ")
-    print("==============================\n")
+    logger.info("Starting Hate Speech Backend")
 
-    # Render requires binding to 0.0.0.0 and PORT env variable
-    port = int(os.environ.get("PORT", 10000))
+    # Start model loading in background
+    threading.Thread(target=load_models_background).start()
 
-    print(f"Host: 0.0.0.0")
-    print(f"Port: {port}")
-    print(f"API Prefix: {Config.API_PREFIX}")
+    # Render requires PORT environment variable
+    port = int(os.environ.get("PORT", Config.PORT))
 
-    print("\nServer running...\n")
+    logger.info(f"Server starting on 0.0.0.0:{port}")
 
     app.run(
         host="0.0.0.0",
