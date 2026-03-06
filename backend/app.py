@@ -16,79 +16,84 @@ from routes.analytics_routes import analytics_bp
 from utils.model_loader import load_all
 
 
-# ==========================================
-# Logging Setup
-# ==========================================
+# ==========================================================
+# Logging Configuration
+# ==========================================================
 logging.basicConfig(
     level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s"
+    format="%(asctime)s | %(levelname)s | %(message)s"
 )
 
 logger = logging.getLogger(__name__)
 
 
-# ==========================================
+# ==========================================================
 # Global Model Status
-# ==========================================
+# ==========================================================
 MODELS_READY = False
 
 
-# ==========================================
-# Model Loader Thread
-# ==========================================
+# ==========================================================
+# Background Model Loader
+# ==========================================================
 def load_models_background():
     """
-    Load AI models without blocking server startup.
-    This prevents Render port timeout.
+    Loads AI models in a background thread so that
+    the Flask server can start immediately.
+
+    This prevents Render deployment timeouts.
     """
+
     global MODELS_READY
 
     try:
-        logger.info("Loading AI models...")
+        logger.info("Starting AI model loading...")
 
         load_all()
 
         MODELS_READY = True
 
-        logger.info("All models loaded successfully!")
+        logger.info("All AI models loaded successfully.")
 
     except Exception as e:
-        logger.error(f"Model loading failed: {str(e)}")
+        logger.exception(f"Model loading failed: {e}")
 
 
-# ==========================================
+# ==========================================================
 # Create Flask Application
-# ==========================================
+# ==========================================================
 def create_app():
 
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Enable CORS
+    # Enable CORS for React frontend
     CORS(app)
 
     logger.info("Flask application initialized")
 
-    # ==========================================
+    # ------------------------------------------------------
     # Register API Routes
-    # ==========================================
+    # ------------------------------------------------------
     app.register_blueprint(predict_bp, url_prefix=Config.API_PREFIX)
     app.register_blueprint(model_bp, url_prefix=Config.API_PREFIX)
     app.register_blueprint(analytics_bp, url_prefix=Config.API_PREFIX)
 
-    logger.info("Routes registered successfully")
+    logger.info("API routes registered")
 
-    # ==========================================
-    # Serve Results (Confusion matrices, charts)
-    # ==========================================
+    # ------------------------------------------------------
+    # Serve Results (charts, confusion matrices)
+    # ------------------------------------------------------
     @app.route("/results/<path:filename>")
     def serve_results(filename):
-        results_dir = Config.RESULTS_DIR
-        return send_from_directory(results_dir, filename)
+        """
+        Serve result images to frontend
+        """
+        return send_from_directory(Config.RESULTS_DIR, filename)
 
-    # ==========================================
-    # Health Check Endpoint
-    # ==========================================
+    # ------------------------------------------------------
+    # Health Check
+    # ------------------------------------------------------
     @app.route("/")
     def health():
         return jsonify({
@@ -98,39 +103,55 @@ def create_app():
             "models_loaded": MODELS_READY
         })
 
-    # ==========================================
+    # ------------------------------------------------------
     # Readiness Check
-    # ==========================================
+    # ------------------------------------------------------
     @app.route("/ready")
     def readiness():
+
         if MODELS_READY:
-            return jsonify({"status": "ready"})
-        else:
-            return jsonify({"status": "loading models"}), 503
+            return jsonify({
+                "status": "ready",
+                "models_loaded": True
+            })
+
+        return jsonify({
+            "status": "initializing",
+            "models_loaded": False
+        }), 503
 
     return app
 
 
-# ==========================================
-# Create App Instance
-# ==========================================
+# ==========================================================
+# Create Flask App Instance
+# ==========================================================
 app = create_app()
 
 
-# ==========================================
+# ==========================================================
+# Start Model Loading (Background)
+# ==========================================================
+model_thread = threading.Thread(
+    target=load_models_background,
+    daemon=True
+)
+
+model_thread.start()
+
+
+# ==========================================================
 # Run Server
-# ==========================================
+# ==========================================================
 if __name__ == "__main__":
 
-    logger.info("Starting Hate Speech Backend")
-
-    # Start model loading in background
-    threading.Thread(target=load_models_background).start()
+    logger.info("Starting Hate Speech Detection Backend")
 
     # Render requires PORT environment variable
     port = int(os.environ.get("PORT", Config.PORT))
 
-    logger.info(f"Server starting on 0.0.0.0:{port}")
+    logger.info(f"Server running on 0.0.0.0:{port}")
+    logger.info(f"API prefix: {Config.API_PREFIX}")
 
     app.run(
         host="0.0.0.0",
